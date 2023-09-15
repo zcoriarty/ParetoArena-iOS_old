@@ -3,6 +3,7 @@
 
 import Alamofire
 import Foundation
+import UIKit
 class NetworkUtil: NSObject {
     static let shared = NetworkUtil()
     class func isConnectedToInternet() -> Bool {

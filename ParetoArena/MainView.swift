@@ -13,10 +13,11 @@ struct MainView: View {
 
     var body: some View {
         TabView {
-//            HabitView(managedObjectContext: self.ctx, viewModel: contributionViewModel)
-//                .tabItem {
-//                    Image(systemName: "rectangle.portrait.on.rectangle.portrait.angled")
-//                }
+            WatchlistView()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                }
+            
 
 //            PostsView(managedObjectContext: self.ctx)
 //                .tabItem {

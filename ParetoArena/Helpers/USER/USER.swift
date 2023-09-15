@@ -12,7 +12,7 @@ class USER: NSObject {
     override private init() {}
     static let shared = USER()
     var details: UserData?
-    var accountDetail: PlaidAccount?
+//    var accountDetail: PlaidAccount?
     var sharelink = ""
     var code = ""
     var isLoggedin = false
@@ -33,22 +33,22 @@ class USER: NSObject {
             self.details = detail
         }
     }
-    func saveAccount(detail: PlaidAccount) {
-        if let encoded = try? encoder.encode(details) {
-            defaults.set(encoded, forKey: "account")
-            consoleLog("Account SAVED")
-            self.accountDetail = detail
-        }
-    }
-    private func loadAccount() {
-        if let savedPerson = defaults.object(forKey: "account") as? Data {
-            let decoder = JSONDecoder()
-            if let loadedPerson = try? decoder.decode(PlaidAccount.self, from: savedPerson) {
-                accountDetail = loadedPerson
-                consoleLog("account LOADED")
-            }
-        }
-    }
+//    func saveAccount(detail: PlaidAccount) {
+//        if let encoded = try? encoder.encode(details) {
+//            defaults.set(encoded, forKey: "account")
+//            consoleLog("Account SAVED")
+//            self.accountDetail = detail
+//        }
+//    }
+//    private func loadAccount() {
+//        if let savedPerson = defaults.object(forKey: "account") as? Data {
+//            let decoder = JSONDecoder()
+//            if let loadedPerson = try? decoder.decode(PlaidAccount.self, from: savedPerson) {
+//                accountDetail = loadedPerson
+//                consoleLog("account LOADED")
+//            }
+//        }
+//    }
     func loadUser() {
         if let savedPerson = defaults.object(forKey: "user") as? Data {
             let decoder = JSONDecoder()
@@ -56,15 +56,15 @@ class USER: NSObject {
                 details = loadedPerson
                 consoleLog("USER LOADED")
                 isLoggedin = true
-                loadAccount()
+//                loadAccount()
             }
         }
     }
     func logout() {
         isLoggedin = false
         defaults.removeObject(forKey: "user")
-        let viewContrl = UIStoryboard.main.instantiateViewController(withIdentifier: NavigationVC.identifier ) as? NavigationVC ?? NavigationVC()
-        UIApplication.setRootView(viewContrl, options: UIApplication.logoutAnimation)
+//        let viewContrl = UIStoryboard.main.instantiateViewController(withIdentifier: NavigationVC.identifier ) as? NavigationVC ?? NavigationVC()
+//        UIApplication.setRootView(viewContrl, options: UIApplication.logoutAnimation)
     }
 }
 struct User: Codable {

@@ -157,18 +157,14 @@ class WatchlistViewModel: ObservableObject {
     @Published var watchingKeys: [String] = []
     @Published var watchlistDict: [String: String] = [:]
     
-    @Published var activeStrategies: [ActiveStrategy] = []
-
     init() {
         getfavoritedStocks()
         getPositions()
-        getActiveStrategies()
     }
     
     @Sendable func refreshData() async {
         getfavoritedStocks()
         getPositions()
-        getActiveStrategies()
     }
 
     
@@ -256,37 +252,5 @@ class WatchlistViewModel: ObservableObject {
 
     
     
-    func getActiveStrategies() {
-        var strategies: [ActiveStrategy] = []
-        let dispatchGroup = DispatchGroup()
-        
-        let url = EndPoint.sServerBase + EndPoint.allStrategies.replacingOccurrences(of: "{user_id}", with: (USER.shared.details?.user?.accountID)!)
-        
-        dispatchGroup.enter()
-        NetworkUtil.request(apiMethod: url, parameters: nil, requestType: .get, onSuccess: { resp -> Void in
-            guard let responseData = resp as? [String: [[String: Any]]] else { return }
-            
-            for (algorithm, stockDataArray) in responseData {
-                var tradedSymbols: [TradedSymbol] = []
-                for stockData in stockDataArray {
-                    if let tradedSymbol = TradedSymbol(from: stockData) {
-                        tradedSymbols.append(tradedSymbol)
-                    }
-                }
-                let strategy = ActiveStrategy(algorithm: algorithm, tradedSymbols: tradedSymbols)
-                strategies.append(strategy)
-            }
-            
-            dispatchGroup.leave()
-        }) { [weak self] error in
-            dispatchGroup.leave()
-            print(error)
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            self.activeStrategies = strategies
-        }
-
-    }
 }
 

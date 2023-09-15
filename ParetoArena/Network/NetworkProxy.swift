@@ -57,52 +57,22 @@ class NetworkProxy: NSObject, ServiceManagerDelegate {
         serviceManager?.patchRestApi(path: EndPoint.updateProfile, parameters: param, reqType: .updateProfile)
     }
 
-    func requestForCountryList() {
-        delegate?.requestDidBegin()
-        serviceManager?.getRestApi(getPath: EndPoint.countries, reqType: .countryList)
-    }
 
     func requestForLinkToken() {
         delegate?.requestDidBegin()
         serviceManager?.getRestApi(getPath: EndPoint.createLinkToken, reqType: .createLinkToken)
     }
 
-    func requestForSetAccessToken(token: String, actID: String) {
-        let param = ["public_token": token, "account_id": actID]
-        delegate?.requestDidBegin()
-        serviceManager?.postRestApi(postPath: EndPoint.setAccessToken, parameters: param, reqType: .setAccessToken)
-    }
-
-    func requestForStateList(code: String) {
-        delegate?.requestDidBegin()
-        let path = EndPoint.states.replacingOccurrences(of: "country_code", with: code)
-        serviceManager?.getRestApi(getPath: path, reqType: .stateList)
-    }
-    func requestForCityList(code: String, state: String) {
-        delegate?.requestDidBegin()
-        let path = EndPoint.cities.replacingOccurrences(of: "country_code", with: code).replacingOccurrences(of: "state_code", with: state)
-        serviceManager?.getRestApi(getPath: path, reqType: .cityList)
-    }
 
     func requestForSign() {
         delegate?.requestDidBegin()
         serviceManager?.postRestApi(postPath: EndPoint.Sign, parameters: [:], reqType: .sign)
     }
 
-    func requestForTransfer() {
-        delegate?.requestDidBegin()
-        serviceManager?.getRestApi(getPath: EndPoint.transfer, reqType: .transfer)
-    }
-
     func requestForDeposit(bID: String, amount: String) {
         delegate?.requestDidBegin()
         let path = EndPoint.deposit.replacingOccurrences(of: "bank_id", with: bID)
         serviceManager?.postRestApi(postPath: path, parameters: ["amount": amount], reqType: .deposit, encoding: URLEncoding.default)
-    }
-
-    func requestForRecipientBanks() {
-        delegate?.requestDidBegin()
-        serviceManager?.getRestApi(getPath: EndPoint.recipientBanks, reqType: .recipientBanks)
     }
 
     func detachBank(bID: String) {

@@ -10,16 +10,16 @@ enum RequestType: Int {
     case signUp
     case login
     case updateProfile
-    case countryList
-    case stateList
-    case cityList
+//    case countryList
+//    case stateList
+//    case cityList
     case magic
     case createLinkToken
-    case setAccessToken
+//    case setAccessToken
     case sign
-    case transfer
+//    case transfer
     case deposit
-    case recipientBanks
+//    case recipientBanks
     case detachBank
     case stats
     case shareableLink

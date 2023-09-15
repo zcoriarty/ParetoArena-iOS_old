@@ -7,6 +7,7 @@ import Charts
 import Foundation
 import SwiftyRSA
 import UIKit
+import SwiftUI
 
 class SwiftParseUtils {
     
@@ -55,7 +56,9 @@ class SwiftParseUtils {
                 stocksArray.add(obj)
             }
         } else {
-            view.makeToast("Server Error")
+            print("Server error parseWatchListData")
+
+            Alert(title: Text("Server Error"))
         }
         return stocksArray
     }
@@ -94,7 +97,8 @@ class SwiftParseUtils {
                 stocksArray.add(obj)
             }
         } else {
-            view.makeToast("Server Error")
+            print("Server error parseWatchListDataNoView")
+            Alert(title: Text("Server Error"))
         }
         return stocksArray
     }

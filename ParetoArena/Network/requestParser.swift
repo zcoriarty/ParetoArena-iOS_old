@@ -16,20 +16,20 @@ class RequestParser: NSObject {
         switch reqType {
         case .signUp, .login, .magic:
             items = parseSignup(response: response)
-        case .countryList, .stateList, .cityList:
-            items = parseCountries(response: response)
+//        case .countryList, .stateList, .cityList:
+//            items = parseCountries(response: response)
         case .updateProfile, .sign:
             items = parseUpdate(response: response)
         case .createLinkToken:
             items = parseLinkToken(response: response)
-        case .setAccessToken:
-            items = parseSetAccessToken(response: response)
-        case .transfer:
-            items = parseTransactions(response: response)
+//        case .setAccessToken:
+//            items = parseSetAccessToken(response: response)
+//        case .transfer:
+//            items = parseTransactions(response: response)
         case .deposit:
             items = parseDeposit(response: response)
-        case .recipientBanks:
-            items = parseReceipientBank(response: response)
+//        case .recipientBanks:
+//            items = parseReceipientBank(response: response)
         case .detachBank:
             items = response
         case .stats:
@@ -81,28 +81,28 @@ class RequestParser: NSObject {
         }
     }
 
-    private func parseCountries(response: Any) -> CountryModel? {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
-            let model = try newJSONDecoder.decode(CountryModel.self, from: jsonData)
-            return model
-        } catch {
-            consoleLog("Model Not Mapped on Json CountryModel", error.localizedDescription)
-            return nil
-        }
-    }
+//    private func parseCountries(response: Any) -> CountryModel? {
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
+//            let model = try newJSONDecoder.decode(CountryModel.self, from: jsonData)
+//            return model
+//        } catch {
+//            consoleLog("Model Not Mapped on Json CountryModel", error.localizedDescription)
+//            return nil
+//        }
+//    }
 
-    private func parseSetAccessToken(response: Any) -> Any? {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
-            let model = try newJSONDecoder.decode(PlaidAccount.self, from: jsonData)
-            USER.shared.saveAccount(detail: model)
-            return model
-        } catch {
-            consoleLog("Model Not Mapped on Json PlaidAccount", error.localizedDescription)
-            return  parseStringError(response: response)
-        }
-    }
+//    private func parseSetAccessToken(response: Any) -> Any? {
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
+//            let model = try newJSONDecoder.decode(PlaidAccount.self, from: jsonData)
+//            USER.shared.saveAccount(detail: model)
+//            return model
+//        } catch {
+//            consoleLog("Model Not Mapped on Json PlaidAccount", error.localizedDescription)
+//            return  parseStringError(response: response)
+//        }
+//    }
 
     private func parseLinkToken(response: Any) -> String {
         if let res = response as? NSDictionary {
@@ -118,16 +118,16 @@ class RequestParser: NSObject {
         return serverError
     }
 
-    private func parseReceipientBank(response: Any) -> [PlaidAccount]? {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
-            let model = try newJSONDecoder.decode([PlaidAccount].self, from: jsonData)
-            return model
-        } catch {
-            consoleLog("Model Not Mapped on Json PlaidAccount", error.localizedDescription)
-            return nil
-        }
-    }
+//    private func parseReceipientBank(response: Any) -> [PlaidAccount]? {
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
+//            let model = try newJSONDecoder.decode([PlaidAccount].self, from: jsonData)
+//            return model
+//        } catch {
+//            consoleLog("Model Not Mapped on Json PlaidAccount", error.localizedDescription)
+//            return nil
+//        }
+//    }
 
     private func parseDeposit(response: Any) -> DepositDetail? {
         do {
@@ -140,16 +140,16 @@ class RequestParser: NSObject {
         }
     }
 
-    private func parseTransactions(response: Any) -> Transactions? {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
-            let model = try newJSONDecoder.decode(Transactions.self, from: jsonData)
-            return model
-        } catch {
-            consoleLog("Model Not Mapped on Json Transactions", error.localizedDescription)
-            return nil
-        }
-    }
+//    private func parseTransactions(response: Any) -> Transactions? {
+//        do {
+//            let jsonData = try JSONSerialization.data(withJSONObject: response, options: JSONSerialization.WritingOptions.prettyPrinted)
+//            let model = try newJSONDecoder.decode(Transactions.self, from: jsonData)
+//            return model
+//        } catch {
+//            consoleLog("Model Not Mapped on Json Transactions", error.localizedDescription)
+//            return nil
+//        }
+//    }
 
     private func parseStats(response: Any) -> (Int, Int) {
         if let res = response as? NSDictionary {

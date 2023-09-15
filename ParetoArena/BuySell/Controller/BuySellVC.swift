@@ -112,54 +112,6 @@ struct NewBuySellVC: View {
                     
     //                Spacer()
                 }
-
-                VStack {
-                    Spacer()
-
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            presentBacktest.toggle()
-                        }, label: {
-                            Text("Backtest")
-                                .foregroundColor(.black)
-                                .frame(width: buttonWidth, height: 46)
-                                .background(Color.white)
-                                .cornerRadius(23)
-                        }).sheet(isPresented: $presentBacktest) {
-                            if #available(iOS 16.0, *) {
-                                NewBacktestSheetView(symbol: currentStock?.symbol ?? "AAPL")
-                                    .presentationDetents([.medium])
-                                
-                            } else {
-                                NewBacktestSheetView(symbol: currentStock?.symbol ?? "AAPL")
-                            }
-                        }
-                        .padding()
-                        Spacer()
-
-                        Button(action: {
-                            buyIsActive = true
-                        }, label: {
-                            Text("Trade Manually")
-                                .foregroundColor(.black)
-                                .frame(width: buttonWidth, height: 46)
-                                .background(Color(.white))
-                                .cornerRadius(23)
-                        })
-                        .fullScreenCover (isPresented: $buyIsActive) {
-                            BuyView(company: currentStock!, isBuyMode: true)
-                        }
-                        .padding()
-                        
-                        Spacer()
-                    }
-                    .background(Color(.systemGray5).opacity(0.85))
-                    .padding(.horizontal)
-                    .cornerRadius(25)
-                    .padding(.bottom, 10)
-
-                }
             }
         }
 
@@ -515,12 +467,12 @@ struct StockTable: View {
     @State private var showLatestQuotePage = false
     @State private var showMinuteBarPage = false
     @State private var showPreviousDailyBarPage = false
-    @StateObject private var backtestViewModel = BacktestViewModel()
+//    @StateObject private var backtestViewModel = BacktestViewModel()
     @State private var strategies: [String] = []
     @State private var selectedStrategy: String = "Dmac Rsi"
     @State private var isDefaultBacktest: Bool = true
     @State private var showFullBacktest: Bool = false
-    @State private var backtestParams: BacktestParams = BacktestParams(strategy: "", funds: "", symbol: "", startDate: "", endDate: "")
+//    @State private var backtestParams: BacktestParams = BacktestParams(strategy: "", funds: "", symbol: "", startDate: "", endDate: "")
 
 
     var body: some View {
@@ -540,56 +492,56 @@ struct StockTable: View {
                 
             }
             
-            VStack(alignment: .leading, spacing: 2){
-                
-                Text("Backtest Preview")
-                    .font(.title2)
-                    .bold()
-                    .padding(.bottom, 5)
-
-                VStack(spacing: 10) {
-                    
-                    HStack {
-                        
-                        createPicker(title: "", selection: $selectedStrategy.onChange { _ in isDefaultBacktest = false }, options: strategies)
-                        
-                        Spacer()
-                        
-                    }
-                    
-                    CombinedChartView(backtestViewModel: backtestViewModel)
-                        .padding()
-                    
-                    Divider()
-                    
-                    HStack {
-                        Button(action: {
-                            backtestParams = getBacktestParams()
-                            showFullBacktest = true
-                        }) {
-                            HStack {
-                                Text("Full Backtest")
-                                    .foregroundColor(.secondary)
-                                    .fontWeight(.bold)
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.secondary)
-
-                            }
-                        }
-                        .fullScreenCover(isPresented: $showFullBacktest) {
-                            
-                            BacktestBaseView(backtestObject: $backtestParams)
-                        }
-                        Spacer()
-                    }
-                    .padding()
-                }
-                .background(Color(.systemGray5).opacity(0.5))
-                .cornerRadius(10)
-                
-            }
-            .padding()
+//            VStack(alignment: .leading, spacing: 2){
+//
+//                Text("Backtest Preview")
+//                    .font(.title2)
+//                    .bold()
+//                    .padding(.bottom, 5)
+//
+//                VStack(spacing: 10) {
+//
+//                    HStack {
+//
+//                        createPicker(title: "", selection: $selectedStrategy.onChange { _ in isDefaultBacktest = false }, options: strategies)
+//
+//                        Spacer()
+//
+//                    }
+//
+////                    CombinedChartView(backtestViewModel: backtestViewModel)
+////                        .padding()
+//
+//                    Divider()
+//
+////                    HStack {
+////                        Button(action: {
+////                            backtestParams = getBacktestParams()
+////                            showFullBacktest = true
+////                        }) {
+////                            HStack {
+////                                Text("Full Backtest")
+////                                    .foregroundColor(.secondary)
+////                                    .fontWeight(.bold)
+////
+////                                Image(systemName: "chevron.right")
+////                                    .foregroundColor(.secondary)
+////
+////                            }
+////                        }
+////                        .fullScreenCover(isPresented: $showFullBacktest) {
+////
+////                            BacktestBaseView(backtestObject: $backtestParams)
+////                        }
+////                        Spacer()
+////                    }
+////                    .padding()
+//                }
+//                .background(Color(.systemGray5).opacity(0.5))
+//                .cornerRadius(10)
+//
+//            }
+//            .padding()
 
             
             VStack(alignment: .leading, spacing: 2) {
@@ -683,88 +635,11 @@ struct StockTable: View {
                 .background(Color(.systemGray5).opacity(0.5))
                 .cornerRadius(10)
             }
-            .onAppear(perform: runBacktest)
-            .onAppear(perform: fetchCards)
             .padding()
 
         }
         .padding()
     }
-    
-    private func getBacktestParams() -> BacktestParams {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-
-        let startDate = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
-        let endDate = Calendar.current.date(byAdding: .hour, value: -1, to: Date())!
-
-        let formattedStartDate = dateFormatter.string(from: startDate).description
-        let formattedEndDate = dateFormatter.string(from: endDate).description
-
-
-        let backtestParams = BacktestParams(
-            strategy: selectedStrategy,
-            funds: "10000",
-            symbol: currentStock.symbol ?? "AAPL",
-            startDate: formattedStartDate,
-            endDate: formattedEndDate
-        )
-        
-        return backtestParams
-
-    }
-    
-    private func runBacktest() {
-        
-        backtestViewModel.getBacktestData(object: getBacktestParams())
-    }
-
-
-    func fetchCards() {
-        let endpoint = EndPoint.sServerBase + EndPoint.strategies
-        guard let url = URL(string: endpoint) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                print("Error fetching data: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            do {
-                let decodedData = try JSONDecoder().decode([StrategyCard].self, from: data)
-                let strategyNames = decodedData.map { $0.name } // Extract the strategy names from the decoded data
-                DispatchQueue.main.async {
-                    self.strategies = strategyNames
-                }
-            } catch {
-                print("Error decoding data: \(error.localizedDescription)")
-            }
-        }.resume()
-    }
-
-    @ViewBuilder
-    private func createPicker(title: String, selection: Binding<String>, options: [String]) -> some View {
-        HStack() {
-            Text(title)
-                .foregroundColor(.white)
-//            Spacer()
-            
-            Picker("Select Stock Symbol", selection: $selectedStrategy) {
-                ForEach(options, id: \.self) { option in
-                    Text(option).tag(option)
-                }
-            }
-            .onChange(of: selectedStrategy) { newStrategy in
-                runBacktest()
-            }
-            .pickerStyle(MenuPickerStyle())
-            .cornerRadius(10)
-
-        }
-    }
-
-
-
         
     func dailyDataStatistics(dailyBar: NewDailyBarData?) -> [(key: String, value: [(key: String, value: String)])] {
         // filter the statistics for "Daily Data"

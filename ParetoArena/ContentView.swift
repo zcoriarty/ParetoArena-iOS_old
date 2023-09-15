@@ -13,7 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         // MARK: Redirecting User Based on Log Status
-        if logStatus{
+        if logStatus {
             MainView()
         }else{
             RegisterView()

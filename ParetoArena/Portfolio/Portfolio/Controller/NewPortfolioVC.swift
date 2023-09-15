@@ -79,7 +79,6 @@ struct WatchlistView: View {
     @State private var watchlistAction: Int? = nil
     @State private var isPickerVisible = false
     @State private var isSheetVisible = false
-    @State private var palIsPresenting = false
     @State private var watchlistName = ""
     @State private var watchlistDict: [String: String] = [:]
     @StateObject var alertModel = AlertViewModel()
@@ -125,15 +124,14 @@ struct WatchlistView: View {
                 Divider()
                     
                 Spacer()
-                if viewModel.activeStrategies.count > 0 {
-                    VStack(alignment: .leading) {
-                        Text("Active Strategies")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.secondary)
-
-                        activeStrategyView()
-                    }
-                }
+//                if $viewModel.activeStrategies.count > 0 {
+//                    VStack(alignment: .leading) {
+//                        Text("Active Strategies")
+//                            .font(.system(size: 14, weight: .bold))
+//                            .foregroundColor(.secondary)
+//
+//                    }
+//                }
                 
                 VStack(alignment: .leading) {
                     HStack {
@@ -187,10 +185,7 @@ struct WatchlistView: View {
                 }
             }
             .refreshable(action: refreshData)
-            .sheet(isPresented: $palIsPresenting) {
-                
-                PalApp()
-             }
+
             .padding()
             .toast(isPresenting: $alertModel.show){
                 // Return AlertToast from ObservableObject
@@ -342,22 +337,6 @@ struct WatchlistView: View {
     }
 
 
-    
-    private func activeStrategyView() -> (some View)? {
-        
-            ScrollView(.horizontal) {
-                LazyHStack() {
-                    ForEach(viewModel.activeStrategies, id: \.algorithm) { strategy in
-                        if #available(iOS 16.0, *) {
-                            ActiveStrategyCard(strategy: strategy, alertModel: alertModel)
-                        }
-                    }
-                }
-            }
-        
-        
-    }
-
     func toggleSection(section: Int) {
         if expandedSections.contains(section) {
             expandedSections.remove(section)
@@ -396,81 +375,6 @@ struct WatchlistSectionHeader: View {
             .padding(.top, 10)
     }
 }
-
-
-
-
-
-@available(iOS 16.0, *)
-struct ActiveStrategyCard: View {
-    let strategy: ActiveStrategy
-    @StateObject var alertModel: AlertViewModel
-    
-    @State private var isLinkActive = false
-    @State private var isSheetPresented = false
-    
-    var body: some View {
-        Button(action: {
-            isSheetPresented = true
-        }) {
-            VStack(alignment: .leading) {
-                HStack() {
-                    Text(strategy.algorithm)
-                        .font(.system(size: 16, weight: .bold))
-                        .padding(.top, 5)
-                    Spacer()
-                }
-                Spacer()
-                
-                HStack {
-                    VStack(alignment: .leading){
-//                        if strategy.averageDrawdown != 0.0 {
-//                            Text("\(strategy.averageDrawdown, specifier: "%.2f")")
-//                                .font(.subheadline)
-//                        } else {
-//                            LoadingIndicator(animation: .threeBalls, color: .secondary, size: .small, speed: .fast)
-//                        }
-//                        Text("Drawdown")
-//                            .font(.system(size: 12, weight: .light))
-                        
-                        if strategy.totalPosition != 0 {
-                            Text("\(strategy.totalPosition)")
-                                .font(.subheadline)
-                        } else {
-                            LoadingIndicator(animation: .threeBalls, color: .secondary, size: .small, speed: .fast)
-                                .padding(.vertical, -10)
-                        }
-                        Text("Total Shares")
-                            .font(.system(size: 12, weight: .light))
-
-                    }
-                    Spacer()
-                    VStack(alignment: .leading) {
-                        if strategy.totalProfitLoss != 0 {
-                            Text("$\(strategy.totalProfitLoss)")
-                                .font(.subheadline)
-                        } else {
-                            LoadingIndicator(animation: .threeBalls, color: .secondary, size: .small, speed: .fast)
-                                .padding(.vertical, -10)
-                        }
-                        Text("Returns")
-                            .font(.system(size: 12, weight: .light))
-                    }
-                }
-                .padding(.bottom, 5)
-            }
-            .padding(10)
-            .frame(width: 180, height: 120)
-            .background(Color.secondary.opacity(0.15))
-            .cornerRadius(10)
-        }
-        .buttonStyle(PlainButtonStyle()) // Removes the default button appearance
-        .fullScreenCover(isPresented: $isSheetPresented) {
-            AlgorithmView(algorithmName: strategy.algorithm, runID: strategy.tradedSymbols.first?.runID ?? "", alertModel: alertModel)
-        }
-    }
-}
-
 
 struct WatchlistSectionFooter: View {
     var body: some View {

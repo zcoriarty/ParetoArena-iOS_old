@@ -20,24 +20,3 @@ extension Notification {
     static let bankConnected = Notification.Name("bankconnected")
     static let bankDisConnected = Notification.Name("bankDisconnected")
 }
-
-struct ToggleModel {
-    
-    init() {
-        isDark = true
-        SceneDelegate.shared?.window!.overrideUserInterfaceStyle = .dark
-    }
-    
-    var isDark: Bool = true {
-        didSet {
-            SceneDelegate.shared?.window!.overrideUserInterfaceStyle = isDark ? .light : .dark
-            updateTabBarAppearance()
-        }
-    }
-    
-    private func updateTabBarAppearance() {
-        DispatchQueue.main.async {
-            UITabBar.appearance().updateAppearance()
-        }
-    }
-}
